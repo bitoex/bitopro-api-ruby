@@ -1,6 +1,7 @@
 require "rest-client"
 require "openssl"
 require "json"
+require "base64"
 
 require "bitopro/version"
 require "bitopro/config"
@@ -13,7 +14,7 @@ module Bitopro
     # Configures the Bitopro API.
     #
     # @example
-    #   Bitopro.configure do |c|
+    #   Bitopro.configure do |config|
     #     config.key = 113743
     #     config.secret = 'fd04e13d806a90f96614ad8e529b2822'
     #   end
@@ -38,6 +39,20 @@ module Bitopro
     get("trades/#{currency_pair}")
   end
 
+  def self.account_balance
+    body = { identity: Bitopro::Config.instance.email, nonce: (Time.now.to_f * 1000).floor }
+    payload = Base64.strict_encode64(body.to_json)
+
+    signature = OpenSSL::HMAC.hexdigest("SHA384", Bitopro::Config.instance.secret, payload)
+
+    response = RestClient.get 'https://api.bitopro.com/v2/accounts/balance',
+      {"X-BITOPRO-APIKEY": Bitopro::Config.instance.key,
+       "X-BITOPRO-PAYLOAD": payload,
+       "X-BITOPRO-SIGNATURE": signature}
+
+    JSON.parse(response.body)
+  end
+
   protected
 
   def self.resource
@@ -48,3 +63,5 @@ module Bitopro
     JSON.parse(resource[route].get params: params)
   end
 end
+
+
