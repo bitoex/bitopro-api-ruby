@@ -7,3 +7,5 @@
 /spec/reports/
 /tmp/
 .DS_Store
+*.gem
+.rspec_status
