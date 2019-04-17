@@ -1,8 +1,14 @@
+require "rest-client"
+require "openssl"
+require "json"
+
 require "bitopro/version"
 require "bitopro/config"
 require "bitopro/config/validator"
 
 module Bitopro
+  BASE_URL = "https://api.bitopro.com/v2".freeze
+
   class << self
     # Configures the Bitopro API.
     #
@@ -18,5 +24,17 @@ module Bitopro
     def configured?
       Bitopro::Config.instance.valid?
     end
+
+
+  end
+
+  def self.order_book(currency_pair)
+    JSON.parse(resource["order-book"][currency_pair].get)
+  end
+
+  protected
+
+  def self.resource
+    @resource ||= RestClient::Resource.new(BASE_URL)
   end
 end
