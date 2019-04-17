@@ -2,6 +2,7 @@ require "rspec"
 require "bundler/setup"
 require 'webmock/rspec'
 require 'pry'
+require 'bitopro'
 
 Dir[File.expand_path(File.join(File.dirname(__FILE__),'support','**','*.rb'))].each { |file| require file }
 

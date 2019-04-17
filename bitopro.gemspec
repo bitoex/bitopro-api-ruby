@@ -1,15 +1,18 @@
 
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "bitopro/api/version"
+require "./lib/bitopro/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "bitopro"
-  spec.version       = Bitopro::Api::VERSION
+  spec.version       = Bitopro::VERSION
   spec.authors       = ["niclin"]
   spec.email         = ["bboyceo@hotmail.com"]
 
-  spec.summary       = "bitopro-#{Bitopro::Api::VERSION}"
+  spec.files         = ['lib/bitopro.rb', *Dir.glob('lib/**/*')]
+  spec.test_files   = Dir.glob('spec/**/*')
+
+  spec.summary       = "bitopro-#{Bitopro::VERSION}"
   spec.description   = %q{Ruby wrapper for the Bitopro API.}
   spec.homepage      = "https://github.com"
   spec.license       = "MIT"
@@ -25,11 +28,6 @@ Gem::Specification.new do |spec|
       "public gem pushes."
   end
 
-  # Specify which files should be added to the gem when it is released.
-  # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
-  spec.files         = Dir.chdir(File.expand_path('..', __FILE__)) do
-    `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
-  end
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
