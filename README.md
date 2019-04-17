@@ -1,6 +1,7 @@
 # Bitopro
 
 [![Build Status](https://travis-ci.org/niclin/bitopro.svg?branch=master)](https://travis-ci.org/niclin/bitopro)
+[![Gem Version](https://badge.fury.io/rb/bitopro.svg)](https://badge.fury.io/rb/bitopro)
 
 This is an unofficial Ruby wrapper for the Bitopro exchange APIs.
 
