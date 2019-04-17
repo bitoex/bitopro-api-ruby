@@ -24,17 +24,27 @@ module Bitopro
     def configured?
       Bitopro::Config.instance.valid?
     end
-
-
   end
 
   def self.order_book(currency_pair)
-    JSON.parse(resource["order-book"][currency_pair].get)
+    get("order-book/#{currency_pair}")
+  end
+
+  def self.ticker(currency_pair)
+    get("ticker/#{currency_pair}")
+  end
+
+  def self.recent_trades(currency_pair)
+    get("trades/#{currency_pair}")
   end
 
   protected
 
   def self.resource
     @resource ||= RestClient::Resource.new(BASE_URL)
+  end
+
+  def self.get(route, params = {})
+    JSON.parse(resource[route].get params: params)
   end
 end
