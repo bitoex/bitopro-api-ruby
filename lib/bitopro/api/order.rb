@@ -17,5 +17,9 @@ module Bitopro
     def cancel_order(pair: "", order_id: "")
       authenticated_delete("/orders/#{pair}/#{order_id}")
     end
+
+    def get_order(pair: "", order_id: "")
+      authenticated_get("/orders/#{pair}/#{order_id}")
+    end
   end
 end
