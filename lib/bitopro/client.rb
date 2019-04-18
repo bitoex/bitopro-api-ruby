@@ -1,5 +1,6 @@
 require_relative './api/account'
 require_relative './api/public'
+require_relative './api/order'
 
 module Bitopro
   class Client
@@ -9,6 +10,7 @@ module Bitopro
 
     include Bitopro::Public
     include Bitopro::Account
+    include Bitopro::Order
 
     def initialize
       @config = Bitopro::Config.instance
@@ -24,10 +26,33 @@ module Bitopro
       raise BitoproSetupError, "Must be set configure before call authenticate action" unless Bitopro.configured?
 
       complete_url = build_url(url)
+
+      json_body = { identity: @config.email, nonce: timestamp }.to_json
+      payload = build_payload(json_body)
+      headers = build_headers(payload)
+
       response = RestClient::Request.execute(method: :get,
                                              url: complete_url,
                                              headers: headers,
                                              payload: params,
+                                             timeout: 10)
+
+      JSON.parse(response.body)
+    end
+
+    def authenticated_post(url, params = {})
+      raise BitoproSetupError, "Must be set configure before call authenticate action" unless Bitopro.configured?
+
+      complete_url = build_url(url)
+
+      json_body = params[:body].to_json
+      payload = build_payload(json_body)
+      headers = build_headers(payload)
+
+      response = RestClient::Request.execute(method: :post,
+                                             url: complete_url,
+                                             headers: headers,
+                                             payload: json_body,
                                              timeout: 10)
 
       JSON.parse(response.body)
@@ -43,13 +68,11 @@ module Bitopro
       JSON.parse(response.body)
     end
 
-    def build_payload
-      body = { identity: @config.email, nonce: new_nonce }
-
-      Base64.strict_encode64(body.to_json)
+    def build_payload(json_body)
+      Base64.strict_encode64(json_body)
     end
 
-    def new_nonce
+    def timestamp
       (Time.now.to_f * 1000).floor
     end
 
@@ -57,9 +80,7 @@ module Bitopro
       OpenSSL::HMAC.hexdigest("SHA384", @config.secret, payload)
     end
 
-    def headers
-      payload = build_payload
-
+    def build_headers(payload)
       {
         "X-BITOPRO-APIKEY": @config.key,
         "X-BITOPRO-PAYLOAD": payload,

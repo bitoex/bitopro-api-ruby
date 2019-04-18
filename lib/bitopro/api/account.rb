@@ -8,7 +8,7 @@ module Bitopro
       authenticated_get("/orders/history")
     end
 
-    def order_list(currency_pair, page = 1, active = false)
+    def order_list(pair: "", page: 1, active: false)
       authenticated_get("/orders/#{currency_pair}", params: { page: page, active: active })
     end
   end
