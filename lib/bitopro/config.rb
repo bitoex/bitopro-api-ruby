@@ -21,7 +21,7 @@ module Bitopro
     end
 
     def valid?
-      !self.key.empty? && !self.secret.empty? && !self.email.empty?
+      !self.key.empty? && !self.secret.empty? && !self.email.empty? rescue false
     end
   end
 end

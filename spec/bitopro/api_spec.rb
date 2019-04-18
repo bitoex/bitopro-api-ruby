@@ -13,9 +13,10 @@ RSpec.describe Bitopro do
     it "makes Bitopro configured" do
       expect(described_class).not_to be_configured
 
-      described_class.configure do |c|
-        c.key = 1
-        c.secret = '2'
+      described_class.configure do |config|
+        config.email = "bitopro@ruby.rspec"
+        config.key = "1"
+        config.secret = "2"
       end
 
       expect(described_class).to be_configured
@@ -25,7 +26,7 @@ RSpec.describe Bitopro do
   describe "#order_book" do
     let(:currency_pair) { "btc_twd" }
 
-    subject { Bitopro.order_book(currency_pair) }
+    subject { Bitopro::Client.new.order_book(currency_pair) }
 
     context "when currency pair is empty" do
 

@@ -1,4 +1,5 @@
 require_relative './api/account'
+require_relative './api/public'
 
 module Bitopro
   class Client
@@ -6,6 +7,7 @@ module Bitopro
 
     BASE_URL = "https://api.bitopro.com/v2".freeze
 
+    include Bitopro::Public
     include Bitopro::Account
 
     def initialize
@@ -22,8 +24,21 @@ module Bitopro
       raise BitoproSetupError, "Must be set configure before call authenticate action" unless Bitopro.configured?
 
       complete_url = build_url(url)
-      response = RestClient::Request.execute(method: :get, url: complete_url,
-                            timeout: 10, headers: headers, payload: params)
+      response = RestClient::Request.execute(method: :get,
+                                             url: complete_url,
+                                             headers: headers,
+                                             payload: params,
+                                             timeout: 10)
+
+      JSON.parse(response.body)
+    end
+
+    def get(url, params = {})
+      complete_url = build_url(url)
+      response = RestClient::Request.execute(method: :get,
+                                             url: complete_url,
+                                             payload: params,
+                                             timeout: 10)
 
       JSON.parse(response.body)
     end
