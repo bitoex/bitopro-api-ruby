@@ -21,7 +21,7 @@ module Bitopro
     end
 
     def valid?
-      Validator.validate(self)
+      !self.key.empty? && !self.secret.empty? && !self.email.empty?
     end
   end
 end
