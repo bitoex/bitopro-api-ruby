@@ -10,5 +10,12 @@ module Bitopro
                                                       timestamp: timestamp,
                                                       type: type }})
     end
+
+    # Example:
+    # client = Bitopro::Client.new
+    # client.cancel_order(pair: "bito_eth", order_id: "3135725012")
+    def cancel_order(pair: "", order_id: "")
+      authenticated_delete("/orders/#{pair}/#{order_id}")
+    end
   end
 end

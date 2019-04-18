@@ -58,6 +58,24 @@ module Bitopro
       JSON.parse(response.body)
     end
 
+    def authenticated_delete(url, params = {})
+      raise BitoproSetupError, "Must be set configure before call authenticate action" unless Bitopro.configured?
+
+      complete_url = build_url(url)
+
+      json_body = { identity: @config.email, nonce: timestamp }.to_json
+      payload = build_payload(json_body)
+      headers = build_headers(payload)
+
+      response = RestClient::Request.execute(method: :delete,
+                                             url: complete_url,
+                                             headers: headers,
+                                             payload: params,
+                                             timeout: 10)
+
+      JSON.parse(response.body)
+    end
+
     def get(url, params = {})
       complete_url = build_url(url)
       response = RestClient::Request.execute(method: :get,
