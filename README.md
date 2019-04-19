@@ -51,12 +51,12 @@ client.create_order(pair: "bito_eth", action: "buy", amount: "600", price: "0.00
 # {"orderId"=>"7520016984", "timestamp"=>1555576726000, "action"=>"BUY", "amount"=>"600", "price"=>"0.000001"}
 
 # Get an order
-client.get_order(pair: "bito_eth", order_id: "")
+client.get_order(pair: "bito_eth", order_id: "7520016984")
 # {"id"=>"7520016984", "pair"=>"bito_eth", "price"=>"0.00000100", "avgExecutionPrice"=>"0.00000000", "action"=>"buy", "type"=>"limit", "timestamp"=>1555576726000, "status"=>0, "originalAmount"=>"600.00000000", "remainingAmount"=>"600.00000000", "executedAmount"=>"0.00000000", "fee"=>"0.00000000", "feeSymbol"=>"BITO", "bitoFee"=>"0.00000000"}
 
 # Cancel an order
 client.cancel_order(pair: "bito_eth", order_id: "3135725012")
-# {"orderId"=>"7520016984", "action"=>"BUY", "timestamp"=>1555576884000, "price"=>"0.000001", "amount"=>"600"}
+# {"orderId"=>"3135725012", "action"=>"BUY", "timestamp"=>1555576884000, "price"=>"0.000001", "amount"=>"600"}
 ```
 
 ## Available Events
@@ -86,8 +86,14 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/niclin/bitopro. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
+1. Fork it
+2. Create your feature branch (```git checkout -b my-new-feature```).
+3. Commit your changes (```git commit -am 'Added some feature'```)
+4. Push to the branch (```git push origin my-new-feature```)
+5. Create new Pull Request
+
+We're using RSpec for testing. Run the test suite with ```rake spec```. Tests for pull requests are appreciated but not required. (If you don't include a test, we'll write one before merging.)
+
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
-
-
