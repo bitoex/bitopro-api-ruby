@@ -4,7 +4,7 @@ require_relative './api/order'
 
 module Bitopro
   class Client
-    class BitoproSetupError < StandardError; end
+    class SetupError < StandardError; end
 
     BASE_URL = "https://api.bitopro.com/v2".freeze
 
@@ -23,7 +23,7 @@ module Bitopro
     end
 
     def authenticated_get(url, params = {})
-      raise BitoproSetupError, "Must be set configure before call authenticate action" unless Bitopro.configured?
+      raise SetupError, "Must be set configure before call authenticate action" unless Bitopro.configured?
 
       complete_url = build_url(url)
 
@@ -41,7 +41,7 @@ module Bitopro
     end
 
     def authenticated_post(url, params = {})
-      raise BitoproSetupError, "Must be set configure before call authenticate action" unless Bitopro.configured?
+      raise SetupError, "Must be set configure before call authenticate action" unless Bitopro.configured?
 
       complete_url = build_url(url)
 

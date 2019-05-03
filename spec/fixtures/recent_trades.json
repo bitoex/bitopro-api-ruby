@@ -1,0 +1,16 @@
+{
+  "data": [
+    {
+      "amount": "0.11000000",
+      "isBuyer": false,
+      "price": "126709.00000000",
+      "timestamp": 1551753875
+    },
+    {
+      "amount": "0.10000000",
+      "isBuyer": false,
+      "price": "126787.00000000",
+      "timestamp": 1551753796
+    }
+  ]
+}
