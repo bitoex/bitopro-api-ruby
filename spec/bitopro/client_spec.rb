@@ -1,28 +1,6 @@
 require "spec_helper"
 
-RSpec.describe Bitopro do
-  it "has a version number" do
-    expect(Bitopro::VERSION).not_to be nil
-  end
-
-  describe ".configure" do
-    before do
-      Bitopro::Config.instance = Bitopro::Config.new
-    end
-
-    it "makes Bitopro configured" do
-      expect(described_class).not_to be_configured
-
-      described_class.configure do |config|
-        config.email = "bitopro@ruby.rspec"
-        config.key = "1"
-        config.secret = "2"
-      end
-
-      expect(described_class).to be_configured
-    end
-  end
-
+RSpec.describe Bitopro::Client do
   describe "#order_book" do
     let(:currency_pair) { "btc_twd" }
 
