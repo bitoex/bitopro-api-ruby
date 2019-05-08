@@ -78,9 +78,11 @@ module Bitopro
 
     def get(url, params = {})
       complete_url = build_url(url)
+      headers = { "X-BITOPRO-API": "ruby" }
       response = RestClient::Request.execute(method: :get,
                                              url: complete_url,
                                              payload: params,
+                                             headers: headers,
                                              timeout: 10)
 
       JSON.parse(response.body)
@@ -100,6 +102,7 @@ module Bitopro
 
     def build_headers(payload)
       {
+        "X-BITOPRO-API": "ruby",
         "X-BITOPRO-APIKEY": @config.key,
         "X-BITOPRO-PAYLOAD": payload,
         "X-BITOPRO-SIGNATURE": signature(payload)
