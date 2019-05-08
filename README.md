@@ -7,6 +7,28 @@ This is an unofficial Ruby wrapper for the Bitopro exchange APIs.
 
 [Bitopro official API document](https://developer.bitopro.com/docs)
 
+- [Installation](#installation)
+- [Getting started](#setup)
+- [Public REST Endpoints](#public-rest-endpoints)
+  - [getOrderBook](#getorderbook)
+  - [getTicker](#getticker)
+  - [getTickers](#gettickers)
+  - [getTrades](#gettrades)
+- [Authenticated REST Endpoints](#authenticated-rest-endpoints)
+  - [getAccountBalances](#getaccountbalances)
+  - [getOrderHistory](#getorderhistory)
+  - [getOrders](#getorders)
+  - [createOrder](#createorder)
+  - [cancelOrder](#cancelorder)
+  - [getOrderStatus](#getorderstatus)
+
+## Rate Limit
+
+| Types | Rate Limit |
+|---|---|
+|  Public API | 600 requests per minute per IP |
+|  Authenticated API | 600 requests per minute per IP/600 requests per minute per user|
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -41,46 +63,388 @@ end
 require "bitopro"
 
 client = Bitopro::Client.new
-
-# Get order book
-client.order_book("btc_twd")
-# {"asks"=>[{"amount"=>"0.00088542", "count"=>1, "price"=>"161986", "total"=>"0.00088542"}}
-
-# Create an order
-client.create_order(pair: "bito_eth", action: "buy", amount: "600", price: "0.000001", type: "limit")
-# {"orderId"=>"7520016984", "timestamp"=>1555576726000, "action"=>"BUY", "amount"=>"600", "price"=>"0.000001"}
-
-# Get an order
-client.get_order(pair: "bito_eth", order_id: "7520016984")
-# {"id"=>"7520016984", "pair"=>"bito_eth", "price"=>"0.00000100", "avgExecutionPrice"=>"0.00000000", "action"=>"buy", "type"=>"limit", "timestamp"=>1555576726000, "status"=>0, "originalAmount"=>"600.00000000", "remainingAmount"=>"600.00000000", "executedAmount"=>"0.00000000", "fee"=>"0.00000000", "feeSymbol"=>"BITO", "bitoFee"=>"0.00000000"}
-
-# Cancel an order
-client.cancel_order(pair: "bito_eth", order_id: "3135725012")
-# {"orderId"=>"3135725012", "action"=>"BUY", "timestamp"=>1555576884000, "price"=>"0.000001", "amount"=>"600"}
 ```
 
-## Available Events
 
-#### Public
 
-- `#order_book(pair)`
-- `#ticker(pair)`
-- `#recent_trades(pair)`
+### Public REST Endpoints
 
-#### Authenticated
+#### getOrderBook
 
-- `#account_balance`
-- `#order_history`
-- `#order_list(pair: STRING, page: INTEGER, active: BOOLEAN)`
-- `#create_order(pair: STRING, action: "buy or sell", amount: INTEGER, price: INTEGER, type: "limit or market")`
-- `#cancel_order(pair: STRING, order_id: STRING)`
-- `#get_order(pair: STRING, order_id: STRING)`
+```ruby
+client.order_book("btc_twd")
+```
 
-## Development
+<details>
+<summary>Output</summary>
 
-After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+```json
+{
+  "bids": [
+    {
+      "price": "180500",
+      "amount": "0.12817687",
+      "count": 1,
+      "total": "0.12817687"
+    },
+    {
+      "price": "180010",
+      "amount": "0.32292",
+      "count": 2,
+      "total": "0.45109687"
+    },
+    {
+      "price": "180000",
+      "amount": "0.24236",
+      "count": 3,
+      "total": "0.69345687"
+    }
+  ],
+  "asks": [
+    {
+      "price": "180599",
+      "amount": "0.00326056",
+      "count": 1,
+      "total": "0.00326056"
+    },
+    {
+      "price": "180600",
+      "amount": "0.04202575",
+      "count": 1,
+      "total": "0.04528631"
+    }
+  ]
+}
+```
+</details>
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+
+#### getTicker
+
+```ruby
+client.ticker("btc_twd")
+```
+
+<details>
+<summary>Output</summary>
+
+```json
+{
+  "data": {
+    "pair": "btc_twd",
+    "lastPrice": "180500.00000000",
+    "isBuyer": true,
+    "priceChange24hr": "4.93",
+    "volume24hr": "94.44971788",
+    "high24hr": "181500.00000000",
+    "low24hr": "173010.00000000"
+  }
+}
+```
+
+</details>
+
+#### getTickers
+
+```ruby
+clinet.tickers("eth_btc")
+```
+
+<details>
+<summary>Output</summary>
+
+```json
+{
+  "data": [
+    {
+      "high24hr": "0.03252800",
+      "isBuyer": false,
+      "lastPrice": "0.03252800",
+      "low24hr": "0.03252800",
+      "pair": "eth_btc",
+      "priceChange24hr": "0",
+      "volume24hr": "0.00000000"
+    },
+    {
+      "high24hr": "541.00000000",
+      "isBuyer": false,
+      "lastPrice": "541.00000000",
+      "low24hr": "541.00000000",
+      "pair": "btg_twd",
+      "priceChange24hr": "0",
+      "volume24hr": "0.00000000"
+    }
+  ]
+}
+```
+
+</details>
+
+#### getTrades
+
+```ruby
+clinet.recent_trades("btc_twd")
+```
+
+<details>
+<summary>Output</summary>
+
+```json
+{
+  "data": [
+    {
+      "timestamp": 1557203407,
+      "price": "180500.00000000",
+      "amount": "0.07717687",
+      "isBuyer": false
+    },
+    {
+      "timestamp": 1557203187,
+      "price": "180500.00000000",
+      "amount": "0.05100000",
+      "isBuyer": false
+    },
+    {
+      "timestamp": 1557203053,
+      "price": "180500.00000000",
+      "amount": "0.01860000",
+      "isBuyer": false
+    },
+    {
+      "timestamp": 1557202804,
+      "price": "180500.00000000",
+      "amount": "0.04781533",
+      "isBuyer": false
+    },
+    {
+      "timestamp": 1557202804,
+      "price": "180500.00000000",
+      "amount": "0.06000000",
+      "isBuyer": false
+    }
+  ]
+}
+```
+
+</details>
+
+### Authenticated REST Endpoints
+
+#### getAccountBalances
+
+```ruby
+client.account_balance
+```
+
+<details>
+<summary>Output</summary>
+
+```json
+{
+  "data": [
+    {
+      "amount": "10001",
+      "available": "1.0",
+      "currency": "bito",
+      "stake": "10000"
+    },
+    {
+      "amount": "0.0",
+      "available": "1.0",
+      "currency": "btc",
+      "stake": "0"
+    },
+    {
+      "amount": "3.0",
+      "available": "0.01",
+      "currency": "eth",
+      "stake": "0"
+    },
+    {
+      "amount": "30000",
+      "available": "2500",
+      "currency": "twd",
+      "stake": "0"
+    }
+  ]
+}
+```
+
+</details>
+
+#### getOrderHistory
+
+```ruby
+client.order_history
+```
+
+<details>
+<summary>Output</summary>
+
+```json
+{
+  "data": [
+    {
+      "action": "buy",
+      "avgExecutionPrice": "100000.00000000",
+      "bitoFee": "0.00000000",
+      "executedAmount": "1.00000000",
+      "fee": "0.00100000",
+      "feeSymbol": "BTC",
+      "id": "123",
+      "originalAmount": "1.00000000",
+      "pair": "btc_twd",
+      "price": "100000.00000000",
+      "remainingAmount": "0.00000000",
+      "status": 2,
+      "timestamp": 1508753757000,
+      "type": "limit"
+    },
+    {
+      "action": "buy",
+      "avgExecutionPrice": "100000.00000000",
+      "bitoFee": "0.00000000",
+      "executedAmount": "1.00000000",
+      "fee": "0.00200000",
+      "feeSymbol": "BTC",
+      "id": "456",
+      "originalAmount": "1.00000000",
+      "pair": "btc_twd",
+      "price": "100000.00000000",
+      "remainingAmount": "0.00000000",
+      "status": 2,
+      "timestamp": 1508753787000,
+      "type": "limit"
+    }
+  ]
+}
+```
+
+</details>
+
+#### getOrders
+
+```ruby
+client.order_list(pair: "btc_twd", page: 1, active: false)
+```
+
+<details>
+<summary>Output</summary>
+
+```json
+{
+  "data": [
+    {
+      "action": "buy",
+      "avgExecutionPrice": "100000.00000000",
+      "bitoFee": "0.00000000",
+      "executedAmount": "1.00000000",
+      "fee": "0.00100000",
+      "feeSymbol": "BTC",
+      "id": "123",
+      "originalAmount": "1.00000000",
+      "pair": "btc_twd",
+      "price": "100000.00000000",
+      "remainingAmount": "0.00000000",
+      "status": 2,
+      "timestamp": 1508753757000,
+      "type": "limit"
+    },
+    {
+      "action": "buy",
+      "avgExecutionPrice": "100000.00000000",
+      "bitoFee": "0.00000000",
+      "executedAmount": "1.00000000",
+      "fee": "0.00200000",
+      "feeSymbol": "BTC",
+      "id": "456",
+      "originalAmount": "1.00000000",
+      "pair": "btc_twd",
+      "price": "100000.00000000",
+      "remainingAmount": "0.00000000",
+      "status": 2,
+      "timestamp": 1508753787000,
+      "type": "limit"
+    }
+  ],
+  "page": 1,
+  "totalPages": 10
+}
+```
+
+</details>
+
+#### createOrder
+
+```ruby
+client.create_order(pair: "btc_twd", action: "buy", amount: 0, price: 0, type: "limit")
+```
+
+<details>
+<summary>Output</summary>
+
+```json
+{
+  "action": "buy",
+  "amount": "0.235",
+  "orderId": "11233456",
+  "price": "1.0",
+  "timestamp": 1504262258000
+}
+```
+
+</details>
+
+#### cancelOrder
+
+```ruby
+client.cancel_order(pair: "btc_twd", order_id: "12234566")
+```
+
+<details>
+<summary>Output</summary>
+
+```json
+{
+  "action": "buy",
+  "amount": 2.3,
+  "orderId": "12234566",
+  "price": 1.2,
+  "timestamp": 1504262258000
+}
+```
+
+</details>
+
+#### getOrderStatus
+
+```ruby
+client.get_order(pair: "btc_twd", order_id: "123")
+```
+
+<details>
+<summary>Output</summary>
+
+```json
+{
+  "action": "sell",
+  "avgExecutionPrice": "112000.00000000",
+  "bitoFee": "103.70370360",
+  "executedAmount": "1.00000000",
+  "fee": "0.00000000",
+  "feeSymbol": "TWD",
+  "id": "123",
+  "originalAmount": "1.00000000",
+  "pair": "btc_twd",
+  "price": "112000.00000000",
+  "remainingAmount": "0.00000000",
+  "status": 2,
+  "timestamp": 1508753757000,
+  "type": "limit"
+}
+```
+
+</details>
 
 ## Contributing
 
@@ -97,3 +461,5 @@ We're using RSpec for testing. Run the test suite with ```rake spec```. Tests fo
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+
+
