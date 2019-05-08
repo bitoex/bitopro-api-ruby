@@ -7,14 +7,14 @@ Gem::Specification.new do |spec|
   spec.name          = "bitopro"
   spec.version       = Bitopro::VERSION
   spec.authors       = ["niclin"]
-  spec.email         = ["bboyceo@hotmail.com"]
+  spec.email         = ["niclin0226@gmail.com"]
 
   spec.files         = ['lib/bitopro.rb', *Dir.glob('lib/**/*')]
   spec.test_files   = Dir.glob('spec/**/*')
 
   spec.summary       = "bitopro-#{Bitopro::VERSION}"
   spec.description   = %q{Ruby wrapper for the Bitopro API.}
-  spec.homepage      = "https://github.com/niclin/bitopro"
+  spec.homepage      = "https://github.com/bitoex/bitopro-api-ruby"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'

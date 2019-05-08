@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/niclin/bitopro.svg?branch=master)](https://travis-ci.org/niclin/bitopro)
 [![Gem Version](https://badge.fury.io/rb/bitopro.svg)](https://badge.fury.io/rb/bitopro)
 
-This is an unofficial Ruby wrapper for the Bitopro exchange APIs.
+This is an Ruby wrapper for the Bitopro exchange APIs.
 
 [Bitopro official API document](https://developer.bitopro.com/docs)
 
@@ -19,7 +19,6 @@ This is an unofficial Ruby wrapper for the Bitopro exchange APIs.
   - [getOrders](#getorders)
   - [createOrder](#createorder)
   - [cancelOrder](#cancelorder)
-  - [getOrderStatus](#getorderstatus)
 
 ## Rate Limit
 
@@ -27,6 +26,20 @@ This is an unofficial Ruby wrapper for the Bitopro exchange APIs.
 |---|---|
 |  Public API | 600 requests per minute per IP |
 |  Authenticated API | 600 requests per minute per IP/600 requests per minute per user|
+
+### Precisions
+
+#### Price precision
+
+The tick size of all pairs is 0.00000001, which means you can trade all pairs only for prices that are a multiple of 0.00000001. For example, you could place a buy BTC/TWD order at price 180,070.12345678. but you will fail to open an order at price 180,070.123456789.
+
+#### Amount precision
+
+The same as price precision but you should be aware the [minimum order amount](#minimum-order-amount).
+
+### Minimum order amount
+
+Checkout the [official settings](https://www.bitopro.com/fees) of minimum amount.
 
 ## Installation
 
@@ -421,7 +434,7 @@ client.get_order(pair: "btc_twd", order_id: "123")
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/niclin/bitopro. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/bitoex/bitopro-api-ruby. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 1. Fork it
 2. Create your feature branch (```git checkout -b my-new-feature```).
@@ -434,5 +447,3 @@ We're using RSpec for testing. Run the test suite with ```rake spec```. Tests fo
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
-
-
