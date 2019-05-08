@@ -9,7 +9,7 @@ module Bitopro
     end
 
     def tickers(currency_pair)
-      raise Error, "currency_pair is required" unless currency_pair
+      currency_pair = nil unless currency_pair
 
       get("/tickers/#{currency_pair}")
     end

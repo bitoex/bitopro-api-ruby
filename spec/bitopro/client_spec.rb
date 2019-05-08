@@ -24,20 +24,14 @@ RSpec.describe Bitopro::Client do
     end
   end
 
-  describe "#ticker" do
-    subject { Bitopro::Client.new.ticker(currency_pair) }
-
-    context "when currency pair is empty" do
-      let(:currency_pair) { nil }
-
-      it { is_expected_block.to raise_error Bitopro::Public::Error }
-    end
+  describe "#tickers" do
+    subject { Bitopro::Client.new.tickers(currency_pair) }
 
     context "when api succeeds" do
       let(:currency_pair) { "btc_twd" }
       let!(:request_stub) do
-        stub_request(:get, "#{Bitopro::BASE_URL}/ticker/#{currency_pair}")
-          .to_return(status: 200, body: json_fixture('ticker'))
+        stub_request(:get, "#{Bitopro::BASE_URL}/tickers/#{currency_pair}")
+          .to_return(status: 200, body: json_fixture('tickers'))
       end
 
       it "return parsed json order book" do
