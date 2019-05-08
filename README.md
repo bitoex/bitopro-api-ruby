@@ -11,7 +11,6 @@ This is an unofficial Ruby wrapper for the Bitopro exchange APIs.
 - [Getting started](#setup)
 - [Public REST Endpoints](#public-rest-endpoints)
   - [getOrderBook](#getorderbook)
-  - [getTicker](#getticker)
   - [getTickers](#gettickers)
   - [getTrades](#gettrades)
 - [Authenticated REST Endpoints](#authenticated-rest-endpoints)
@@ -116,32 +115,6 @@ client.order_book("btc_twd")
   ]
 }
 ```
-</details>
-
-
-#### getTicker
-
-```ruby
-client.ticker("btc_twd")
-```
-
-<details>
-<summary>Output</summary>
-
-```json
-{
-  "data": {
-    "pair": "btc_twd",
-    "lastPrice": "180500.00000000",
-    "isBuyer": true,
-    "priceChange24hr": "4.93",
-    "volume24hr": "94.44971788",
-    "high24hr": "181500.00000000",
-    "low24hr": "173010.00000000"
-  }
-}
-```
-
 </details>
 
 #### getTickers
@@ -416,7 +389,7 @@ client.cancel_order(pair: "btc_twd", order_id: "12234566")
 
 </details>
 
-#### getOrderStatus
+#### getOrder
 
 ```ruby
 client.get_order(pair: "btc_twd", order_id: "123")
