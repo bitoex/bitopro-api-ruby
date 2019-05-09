@@ -6,6 +6,7 @@ module Bitopro
   class Client
     class SetupError < StandardError; end
 
+    AUTH_HTTP_ACTION = %w(get post delete)
     BASE_URL = "https://api.bitopro.com/v2".freeze
 
     include Bitopro::Public
@@ -18,71 +19,33 @@ module Bitopro
 
     private
 
-    def build_url(url)
+    def complete_url(url)
       "#{BASE_URL}#{url}"
     end
 
-    def authenticated_get(url, params = {})
-      raise SetupError, "Must be set configure before call authenticate action" unless Bitopro.configured?
+     AUTH_HTTP_ACTION.each do |action|
+      define_method "authenticated_#{action}" do |url, params = {}|
+        raise SetupError, "Must be set configure before call authenticate action" unless Bitopro.configured?
 
-      complete_url = build_url(url)
+        body = build_json_body(params: params, action: action)
+        payload = build_payload(body)
+        headers = build_headers(payload)
 
-      json_body = { identity: @config.email, nonce: timestamp }.to_json
-      payload = build_payload(json_body)
-      headers = build_headers(payload)
+        response = RestClient::Request.execute(method: action,
+                                               url: complete_url(url),
+                                               headers: headers,
+                                               payload: params,
+                                               timeout: 10)
 
-      response = RestClient::Request.execute(method: :get,
-                                             url: complete_url,
-                                             headers: headers,
-                                             payload: params,
-                                             timeout: 10)
-
-      JSON.parse(response.body)
-    end
-
-    def authenticated_post(url, params = {})
-      raise SetupError, "Must be set configure before call authenticate action" unless Bitopro.configured?
-
-      complete_url = build_url(url)
-
-      json_body = params[:body].to_json
-      payload = build_payload(json_body)
-      headers = build_headers(payload)
-
-      response = RestClient::Request.execute(method: :post,
-                                             url: complete_url,
-                                             headers: headers,
-                                             payload: json_body,
-                                             timeout: 10)
-
-      JSON.parse(response.body)
-    end
-
-    def authenticated_delete(url, params = {})
-      raise BitoproSetupError, "Must be set configure before call authenticate action" unless Bitopro.configured?
-
-      complete_url = build_url(url)
-
-      json_body = { identity: @config.email, nonce: timestamp }.to_json
-      payload = build_payload(json_body)
-      headers = build_headers(payload)
-
-      response = RestClient::Request.execute(method: :delete,
-                                             url: complete_url,
-                                             headers: headers,
-                                             payload: params,
-                                             timeout: 10)
-
-      JSON.parse(response.body)
+        JSON.parse(response.body)
+      end
     end
 
     def get(url, params = {})
-      complete_url = build_url(url)
-      headers = { "X-BITOPRO-API": "ruby" }
       response = RestClient::Request.execute(method: :get,
-                                             url: complete_url,
+                                             url: complete_url(url),
                                              payload: params,
-                                             headers: headers,
+                                             headers: tracking_header,
                                              timeout: 10)
 
       JSON.parse(response.body)
@@ -90,6 +53,10 @@ module Bitopro
 
     def build_payload(json_body)
       Base64.strict_encode64(json_body)
+    end
+
+    def build_json_body(params:, action:)
+      action == "post" ? params[:body] : { identity: @config.email, nonce: timestamp }
     end
 
     def timestamp
@@ -100,13 +67,16 @@ module Bitopro
       OpenSSL::HMAC.hexdigest("SHA384", @config.secret, payload)
     end
 
+    def tracking_header
+      { "X-BITOPRO-API": "ruby" }
+    end
+
     def build_headers(payload)
       {
-        "X-BITOPRO-API": "ruby",
         "X-BITOPRO-APIKEY": @config.key,
         "X-BITOPRO-PAYLOAD": payload,
         "X-BITOPRO-SIGNATURE": signature(payload)
-      }
+      }.merge!(tracking_header)
     end
   end
 end
