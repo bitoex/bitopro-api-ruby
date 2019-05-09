@@ -1,5 +1,7 @@
 module Bitopro
   module Account
+    class Error < StandardError; end
+
     def account_balance
       authenticated_get("/accounts/balance")
     end
@@ -9,7 +11,9 @@ module Bitopro
     end
 
     def order_list(pair: "", page: 1, active: false)
-      authenticated_get("/orders/#{currency_pair}", params: { page: page, active: active })
+      raise Error, "pair is required" unless pair
+
+      authenticated_get("/orders/#{pair}", params: { page: page, active: active })
     end
   end
 end
