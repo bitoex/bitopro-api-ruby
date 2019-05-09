@@ -27,8 +27,8 @@ module Bitopro
       define_method "authenticated_#{action}" do |url, params = {}|
         raise SetupError, "Must be set configure before call authenticate action" unless Bitopro.configured?
 
-        body = build_json_body(params: params, action: action)
-        payload = build_payload(body)
+        json_body = build_json_body(params: params, action: action)
+        payload = build_payload(json_body)
         headers = build_headers(payload)
 
         response = RestClient::Request.execute(method: action,
@@ -56,7 +56,8 @@ module Bitopro
     end
 
     def build_json_body(params:, action:)
-      action == "post" ? params[:body] : { identity: @config.email, nonce: timestamp }
+      body = action == "post" ? params[:body] : { identity: @config.email, nonce: timestamp }
+      body.to_json
     end
 
     def timestamp

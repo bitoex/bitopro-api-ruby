@@ -133,7 +133,7 @@ client.order_book("btc_twd")
 #### getTickers
 
 ```ruby
-clinet.tickers("eth_btc")
+client.tickers("eth_btc")
 ```
 
 <details>
@@ -169,7 +169,7 @@ clinet.tickers("eth_btc")
 #### getTrades
 
 ```ruby
-clinet.recent_trades("btc_twd")
+client.recent_trades("btc_twd")
 ```
 
 <details>

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    bitopro (1.0.3)
+    bitopro (1.0.4)
       rest-client
 
 GEM
