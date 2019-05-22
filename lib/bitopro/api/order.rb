@@ -1,9 +1,13 @@
 module Bitopro
   module Order
+    class Error < StandardError; end
+
     # Example:
     # client = Bitopro::Client.new
     # client.create_order(pair: "bito_eth", action: "buy", amount: "600", price: "0.000001", type: "limit")
-    def create_order(pair: "", action: "", amount: 0, price: 0, type: "limit")
+    def create_order(pair: "", action: "", amount: "0", price: "0", type: "limit")
+      raise Error, "Amount or Price must be string" if !amount.is_a?(String) || !price.is_a?(String)
+
       authenticated_post("/orders/#{pair}", { body: { action: action,
                                                       amount: amount,
                                                       price: price,

@@ -23,7 +23,7 @@ module Bitopro
       "#{BASE_URL}#{url}"
     end
 
-     AUTH_HTTP_ACTION.each do |action|
+    AUTH_HTTP_ACTION.each do |action|
       define_method "authenticated_#{action}" do |url, params = {}|
         raise SetupError, "Must be set configure before call authenticate action" unless Bitopro.configured?
 
@@ -31,24 +31,35 @@ module Bitopro
         payload = build_payload(json_body)
         headers = build_headers(payload)
 
-        response = RestClient::Request.execute(method: action,
-                                               url: complete_url(url),
-                                               headers: headers,
-                                               payload: params,
-                                               timeout: 10)
+        begin
+          response = RestClient::Request.execute(method: action,
+                                                 url: complete_url(url),
+                                                 headers: headers,
+                                                 payload: action == "post" ? json_body : params,
+                                                 timeout: 10)
+          response_body = response.body
+        rescue RestClient::ExceptionWithResponse => error
+          response_body = error.response
+        end
 
-        JSON.parse(response.body)
+        JSON.parse(response_body)
       end
     end
 
     def get(url, params = {})
-      response = RestClient::Request.execute(method: :get,
-                                             url: complete_url(url),
-                                             payload: params,
-                                             headers: tracking_header,
-                                             timeout: 10)
+      begin
+        response = RestClient::Request.execute(method: :get,
+                                               url: complete_url(url),
+                                               payload: params,
+                                               headers: tracking_header,
+                                               timeout: 10)
 
-      JSON.parse(response.body)
+        response_body = response.body
+      rescue RestClient::ExceptionWithResponse => error
+        response_body = error.response
+      end
+
+      JSON.parse(response_body)
     end
 
     def build_payload(json_body)

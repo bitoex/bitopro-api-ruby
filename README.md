@@ -363,7 +363,7 @@ client.order_list(pair: "btc_twd", page: 1, active: false)
 #### createOrder
 
 ```ruby
-client.create_order(pair: "btc_twd", action: "buy", amount: 0, price: 0, type: "limit")
+client.create_order(pair: "btc_twd", action: "buy", amount: "0.235", price: "1", type: "limit")
 ```
 
 <details>
